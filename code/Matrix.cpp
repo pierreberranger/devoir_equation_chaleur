@@ -4,7 +4,7 @@
 
 #if !defined(MATRIX)
 #define MATRIX
-#include "/mnt/c/Users/pierr/info/devoir_equation_chaleur/includes/Matrix.hpp"
+#include "../includes/Matrix.hpp"
 
 
 
@@ -12,7 +12,6 @@ Matrice::Matrice(std::vector<double> v, int n, int k): matrice(v),p(n),q(k){};
 Matrice::Matrice(std::vector<double> v, int n): matrice(v),p(n),q(n){};
 Matrice::Matrice( int n): matrice(std::vector<double> (n*n,0.0)),p(n),q(n){};
 Matrice::Matrice( int n, int k) : matrice(std::vector<double> (n*k,0.0)),p(n),q(k){};
-
 
 double Matrice::operator()(int i, int j){
     return this->matrice[i*this->q +j];

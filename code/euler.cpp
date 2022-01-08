@@ -1,10 +1,10 @@
 #include "../includes/euler.hpp"
 
 
-int N = 10;
-double t0 = 0. ;
-double tf = 0.5 ;
-double dx = 1./N;
+const int N = 10;
+const double t0 = 0. ;
+const double tf = 0.5 ;
+const double dx = 1./N;
 
 Matrice get_D(){
     std::vector<double> v(N);
@@ -14,7 +14,7 @@ Matrice get_D(){
     }
     return Matrice(v, 1, N);
 }
-Matrice get_K(Matrice D){
+Matrice get_K(const Matrice D){
     std::vector<double> v(N*N);
     v[get_k(0,0,N)] = -D(0,0)-D(0,1);
     v[get_k(0,1,N)] = D(0,0);
@@ -54,6 +54,23 @@ Matrice euler_explicite(double dt){
     T.write();
     while(t<tf){
         T = (I + dt*K)*T;
+        t = t + dt;
+        T.matrice[0] = 0;
+        T.matrice[N-1] = 0;
+        T.write();
+    }
+    return T;
+
+}
+Matrice euler_implicite(double dt){
+    Matrice T = get_T();
+    Matrice I = Mat_identite(N);
+    Matrice D = get_D();
+    Matrice K = get_K(D);
+    double t = t0;
+    T.write();
+    while(t<tf){
+        T = grad_conj(I + dt*K, T, T, 0.1);
         t = t + dt;
         T.matrice[0] = 0;
         T.matrice[N-1] = 0;

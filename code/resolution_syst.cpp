@@ -1,5 +1,7 @@
 
-#include "resolution_syst.hpp"
+#if !defined(GRADIENT)
+#define GRADIENT
+#include "../includes/resolution_syst.hpp"
 
 
 
@@ -19,3 +21,4 @@ Matrice grad_conj(Matrice A, Matrice B,  Matrice X0, double epsilon){
     }
     return X;
 }
+#endif
