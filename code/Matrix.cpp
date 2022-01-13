@@ -1,10 +1,9 @@
-#include<vector>
-#include<iostream>
-#include<stdexcept>
 
-#if !defined(MATRIX)
-#define MATRIX
+
+#if !defined(MATRIXC)
+#define MATRIXC
 #include "../includes/Matrix.hpp"
+
 
 
 
@@ -12,20 +11,27 @@ Matrice::Matrice(std::vector<double> v, int n, int k): matrice(v),p(n),q(k){};
 Matrice::Matrice(std::vector<double> v, int n): matrice(v),p(n),q(n){};
 Matrice::Matrice( int n): matrice(std::vector<double> (n*n,0.0)),p(n),q(n){};
 Matrice::Matrice( int n, int k) : matrice(std::vector<double> (n*k,0.0)),p(n),q(k){};
+Matrice::Matrice(const Matrice& m) : matrice(m.matrice), p(m.p), q(m.q){};
+Matrice::Matrice(std::tuple<int, int> dim) {
+    auto [n, k] = dim;
+    this->matrice = std::vector<double> (n*k,0.0);
+    this->p = n;
+    this->q = k;
+};
 
-double Matrice::operator()(int i, int j){
+double Matrice::operator()(int i, int j) const{
     return this->matrice[i*this->q +j];
 
 }
 
-std::tuple<int,int> Matrice::get_i_j(int k){
+std::tuple<int,int> Matrice::get_i_j(int k) const{
     return {k/this->q, k % this->q};
 }
 
 int get_k(int i ,int j, int q){
     return i*q +j;
 }
-Matrice Matrice::operator+(Matrice m1){
+Matrice Matrice::operator+(const Matrice& m1) const{
     if (m1.p != this->p || m1.q != this->q){
         throw std::invalid_argument("les dimensions ne correspondent pas+");
     }
@@ -37,7 +43,7 @@ Matrice Matrice::operator+(Matrice m1){
     
     return Matrice(m, m1.p, m1.q);
 }
-Matrice Matrice::operator-(Matrice m1){
+Matrice Matrice::operator-(const Matrice& m1) const{
     if (m1.p != this->p || m1.q != this->q){
         throw std::invalid_argument("les dimensions ne correspondent pas-");
     }
@@ -47,42 +53,44 @@ Matrice Matrice::operator-(Matrice m1){
     }
     return Matrice(m, m1.p, m1.q);
 }
-Matrice Matrice::operator*(double lambda){
+Matrice Matrice::operator*(double lambda) const{
     std::vector<double> m(this->matrice.size());
     for (int k=0; k<m.size(); k++){
         m[k] =  this->matrice[k] * lambda;
     }
     return Matrice(m, this->p, this->q);
 }
-Matrice operator*(double lambda, Matrice m1){
-    std::vector<double> m(m1.matrice.size());
-    for (int k=0; k<m.size(); k++){
-        m[k] =  m1.matrice[k] * lambda;
+Matrice operator*(double lambda, const Matrice& m1){
+    auto [p,q] = m1.dim();
+    Matrice m = Matrice(p,q);
+    for(int i=0; i<p; i++){
+        for(int j=0;j<q; j++){
+            m(i,j) = lambda*m1(i,j);
+        }
     }
-    return Matrice(m, m1.p, m1.q);
+    return m;
 }
-Matrice Matrice::operator*(Matrice m1){
+Matrice Matrice::operator*(const Matrice& m1) const{
     if (m1.p != this->q){
         throw std::invalid_argument("les dimensions ne correspondent pas");
     }
-    std::vector<double> m(m1.q * this->p);
+    Matrice m = Matrice(this->p, m1.q);
     for (int i=0; i< this->p; i++){
         for (int j=0; j<m1.q; j++){
             double mk = 0;
             for (int l=0; l<m1.p; l++){
-                mk = mk + this->matrice[get_k(i,l, this->q)] * m1(l,j);
+                mk = mk + (*this)(i,l) * m1(l,j);
 
             }
-        int k = get_k(i, j, m1.q);
-        m[k] =  mk;
+            m(i,j) = mk;
         }
     }
-    return Matrice(m, this->p, m1.q);
+    return m;
 }
-void Matrice::print_matrix(){
+void Matrice::print_matrix() const{
     for (int i=0; i<this->p; i++){
         for (int j=0; j<this->q; j++){
-            std::cout<< this->matrice[get_k(i, j, this->q)]<<" ";
+            std::cout<< (*this)(i,j)<<" ";
 
         }
         std::cout<<std::endl;
@@ -105,11 +113,28 @@ Matrice Matrice::transpose(){
     
 }
 
-void Matrice::write(){
-    std::ofstream temperature("temperature.txt", std::ios::app);
+void Matrice::write(std::string name) const{
+    std::string path = "trace_python/";
+    std::ofstream temperature(path + name, std::ios::app);
     for (int i=0; i<this->p; i++){
         temperature<<this->matrice[i]<<" ";
     }
     temperature<<std::endl;
+    temperature.close();
 }
+
+
+
+
+double& Matrice::operator()(int i, int j) {
+    return this->matrice[get_k(i ,j, this->q)];
+
+}
+
+std::tuple<int, int> Matrice::dim() const{
+    return {this->p, this->q};
+}
+
+
+
 #endif
