@@ -7,13 +7,15 @@ const double t0 = 0. ;
 const double tf = 0.5 ;
 const double dx = 1./N;
 
+
+/* Cette fonction permet d'effacer ce qui a été écrit dans un fichier (lors d'une éxecution antérieure par exemple)*/
 void clean(std::string name){
     std::string path = "trace_python/";
     std::ofstream file(path + name);
     file.close();
 }
 
-
+/* fonctions pour obtenir facilement les matrices du problème:*/
 Matrice get_D(){
     std::vector<double> v(N);
     for(int i=0;i<N;i++){
@@ -66,9 +68,9 @@ Matrice get_T(){
 
 
 
+/* les différentes fonctions euler:*/
 
-
-Matrice euler_explicite(double dt){
+Matrice euler_explicite(const double& dt){
     Matrice T = get_T();
     Matrice I = Mat_identite(N);
     Matrice D = get_D();
@@ -87,7 +89,7 @@ Matrice euler_explicite(double dt){
     return T;
 
 }
-Matrice euler_implicite(double dt){
+Matrice euler_implicite(const double& dt){
     Matrice T = get_T();
     Matrice I = Mat_identite(N);
     Matrice D = get_D();
@@ -105,7 +107,7 @@ Matrice euler_implicite(double dt){
     }
     return T;
 }
-Matrice euler_implicite_heterogene(double dt){
+Matrice euler_implicite_heterogene(const double& dt){
     Matrice T = get_T();
     Matrice I = Mat_identite(N);
     Matrice D = get_D_heterogene();
@@ -125,7 +127,7 @@ Matrice euler_implicite_heterogene(double dt){
 
 }
 
-Matrice euler_explicite_heterogene(double dt){
+Matrice euler_explicite_heterogene(const double& dt){
     Matrice T = get_T();
     Matrice I = Mat_identite(N);
     Matrice D = get_D_heterogene();

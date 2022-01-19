@@ -27,7 +27,7 @@ class Matrice{
         Matrice operator*(const Matrice& m1) const;
         Matrice operator*(double lambda) const;
         void print_matrix() const;
-        Matrice transpose();
+        Matrice transpose() ;
         void write(std::string name) const;
         std::tuple<int, int> dim() const;
         double& operator()(int i, int j) ;
@@ -35,4 +35,7 @@ class Matrice{
 int get_k(int i, int j, int q);
 Matrice operator*(double lambda, const Matrice& m1) ;
 Matrice Mat_identite(int n);
+
+
+
 #endif

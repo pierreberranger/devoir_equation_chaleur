@@ -2,9 +2,10 @@ CXX=g++
 CXXFLAGS=-Wall -ggdb -Iinclude
 AR=/usr/bin/ar -r 
 
+
+
 code := $(wildcard code/*.cpp)
 obj := $(subst code, build, $(code:.cpp=.o))
-
 
 .PHONY: directories
 
@@ -31,3 +32,4 @@ clean:
 	rm -r build
 
 
+$(info pour executer utiliser la commande: ./solve )

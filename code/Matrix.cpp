@@ -96,6 +96,7 @@ void Matrice::print_matrix() const{
         std::cout<<std::endl;
     }
 }
+
 Matrice Mat_identite(int n){
     std::vector<double> v(n*n);
     for(int i=0; i<n; i++){
@@ -103,7 +104,7 @@ Matrice Mat_identite(int n){
     }
     return Matrice(v, n, n);
 }
-Matrice Matrice::transpose(){
+Matrice Matrice::transpose() {
     if (this-> p!=1 && this ->q!=1){
         throw std::invalid_argument("cette fonction transposée n'est prévue que pour les matrices lignes ou colonnes");
         
@@ -113,7 +114,13 @@ Matrice Matrice::transpose(){
     
 }
 
+
+/* cette fonction écrit (en ligne) une matrice colonne dans un fichier texte dont on a donné le nom, sans écraser le contenu du fichier*/
 void Matrice::write(std::string name) const{
+    if ( this ->q!=1){
+        throw std::invalid_argument("cette fonction ne prend en argument que des matrices colonnes");
+    }
+        
     std::string path = "trace_python/";
     std::ofstream temperature(path + name, std::ios::app);
     for (int i=0; i<this->p; i++){

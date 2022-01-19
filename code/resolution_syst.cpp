@@ -83,9 +83,7 @@ Matrice resolution_gauss(const Matrice& A, const Matrice& B){
     Matrice A_g = A;
     Matrice B_g = B;
     
-    
     gauss(A_g,B_g);
-    Matrice I = Mat_identite(10);
     
     return B_g;
     
